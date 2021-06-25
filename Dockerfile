@@ -9,7 +9,6 @@ COPY crud /app/crud
 COPY database /app/database
 COPY models /app/models
 COPY schema /app/schema
-COPY config.py /app/config.py
 COPY main.py /app/main.py
 
 RUN python3 -m pip install -r requirements.txt
