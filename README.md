@@ -3,11 +3,10 @@
 </p>
 
 <p align="center">
-
-[![Docker](https://github.com/GDGSNF/ChefAPI/actions/workflows/docker-publish.yml/badge.svg?branch=main)](https://github.com/GDGSNF/ChefAPI/actions/workflows/docker-publish.yml)
-
-[![Docker Image CI](https://github.com/GDGSNF/ChefAPI/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/GDGSNF/ChefAPI/actions/workflows/docker-image.yml)
-
+    <a href="https://github.com/GDGSNF/ChefAPI/actions/workflows/docker-publish.yml">
+    <img alt="Docker" src="https://github.com/GDGSNF/ChefAPI/actions/workflows/docker-publish.yml/badge.svg?branch=main"/></a>
+    <a href="https://github.com/GDGSNF/ChefAPI/actions/workflows/docker-image.yml">
+    <img alt="Docker Image CI" src="https://github.com/GDGSNF/ChefAPI/actions/workflows/docker-image.yml/badge.svg?branch=main"></a>
 </p>
 
 # ChefAPI :rocket:
