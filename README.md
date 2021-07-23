@@ -1,6 +1,4 @@
-<p align="center">
-    <img src=".github/img/picture_.png" alt="ChefAPI">
-</p>
+![ChefAPI](.github/img/header.svg)
 
 <p align="center">
     <a href="https://github.com/GDGSNF/ChefAPI/actions/workflows/docker-publish.yml">
@@ -9,140 +7,131 @@
     <img alt="Docker Image CI" src="https://github.com/GDGSNF/ChefAPI/actions/workflows/docker-image.yml/badge.svg?branch=main"></a>
 </p>
 
-# ChefAPI :rocket:
+# ChefAPI
 
-- An API using FASTAPI & Python-Jose & SQLAlchemy to create and share or keeping track of awesome food recipes.
+API using FastAPI and PostgreSQL to create and share or keeping track of awesome food recipes. Our API have aslo a Crud System Using JWT and Oauth2 to Create a Complete API that Can Be Used with a High Quality Frontend Project. ⛏
 
-- You can Sign Up / Login and share with others Your awesome Food Recipes.
+## Getting Started
 
-- Using PostgreSQL as a DataBase and Docker for containerization.
+- To start using ChefAPI You need some experience in Cuisine maybe how to create a Moroccan `CousCous` or `Tajine`.
 
-- Easy to use and Simple to track No Bad Code :heart:
+### Prerequisites
 
-## Requirements :rocket:
+- Python 3.8.6 or higher
+- PostgreSQL
+- FastAPI
+- Docker
 
-- To start using ChefAPI You need some experience in Cuisine maybe how to create a Moroccan CousCous or Tajine :laughing: , But also you need this:
+### Project setup
 
-- [Docker](https://www.docker.com/)
+```sh
+# clone the repo
+$ git clone https://github.com/GDGSNF/ChefAPI
 
-- [PostgreSQL](https://www.postgresql.org/)
-
-- [Python](https://www.python.org/)
-
-### Installation
-
-- Get started by cloning the repository :
-
-```bash
-git clone https://github.com/GDGSNF/ChefAPI.git
+# move to the project folder
+$ cd ChefAPI
 ```
 
-- Create & activate a python3 [virtual environment](https://docs.python.org/3/tutorial/venv.html) (optional, but very recommended).
+### Creating virtual environment
 
-- Install [requirements](requirements.txt):
+- Install `pipenv` a global python project `pip install pipenv`
+- Create a `virtual environment` for this project
 
-```bash
-pip install -r requirements.txt
+```shell
+# creating pipenv environment for python 3
+$ pipenv --three
+
+# activating the pipenv environment
+$ pipenv shell
+
+# if you have multiple python 3 versions installed then
+$ pipenv install -d --python 3.8
+
+# install all dependencies (include -d for installing dev dependencies)
+$ pipenv install -d
 ```
 
-## Get Started :rocket:
+### Configured Enviromment
 
-- An API with a High Quality of Code based on FastAPI is built on a Python framework called Starlette which is a lightweight ASGI framework/toolkit, which is itself built on Uvicorn.
+#### Database
 
-- Using SQLAlchemy to Connect to our PostgreSQL Database :heart:
+- Using SQLAlchemy to Connect to our PostgreSQL Database
+- Containerization The Database.
+- Drop your PostgreSQL Configuration at the `.env.sample` and Don't Forget to change the Name to `.env`
 
-```py
-    POSTGRES_SERVER: str = Field(..., env="POSTGRES_SERVER")
-    POSTGRES_USER: str = Field(..., env="POSTGRES_USER")
-    POSTGRES_PASSWORD: str = Field(..., env="POSTGRES_PASSWORD")
-    POSTGRES_DB: str = Field(..., env="POSTGRES_DB")
-    SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
+```conf
+# example of Configuration for the .env file
 
-    @validator("SQLALCHEMY_DATABASE_URI", pre=True)
-    def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
-        if isinstance(v, str):
-            return v
-        return PostgresDsn.build(
-            scheme="postgresql",
-            user=values.get("POSTGRES_USER"),
-            password=values.get("POSTGRES_PASSWORD"),
-            host=values.get("POSTGRES_SERVER"),
-            path=f"/{values.get('POSTGRES_DB') or ''}",
-        )
+POSTGRES_SERVER = localhost
+POSTGRES_USER = root
+POSTGRES_PASSWORD = password
+POSTGRES_DB = ChefAPI
 ```
 
-- containerization for the Database and also for the FastAPI project.
+### Running the Application
 
-> Docker-compose.yaml
+- To run the [Main](main.py) we need to use [uvicorn](https://www.uvicorn.org/) a lightning-fast ASGI server implementation, using uvloop and httptools.
 
-```docker
-version: "3.8"
+```sh
+# Running the application using uvicorn
+$ uvicorn main:app
 
-services:
-  db:
-    image: postgres
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-  web:
-    build: .
-    command: python main.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
+# To run the Application under a reload enviromment use -- reload
+$ uvicorn main:app --reload
 ```
 
-- Connect and Install your PostgreSQL Container using the [dockerfile](database/Dockerfile) :
+## Running the Docker Container
 
-```docker
-# syntax=docker/dockerfile:1
-FROM ubuntu:16.04
+- We have the Dockerfile created in above section. Now, we will use the Dockerfile to create the image of the FastAPI app and then start the FastAPI app container.
 
-RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
-
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" >/etc/apt/sources.list.d/pgdg.list
-
-RUN apt-get update && apt-get install -y python-software-properties software-properties-common postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
-
-USER postgres
-
-RUN /etc/init.d/postgresql start && \
-    psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" && \
-    createdb -O docker docker
-
-RUN echo "host all  all    0.0.0.0/0  md5" >>/etc/postgresql/9.3/main/pg_hba.conf
-
-RUN echo "listen_addresses='*'" >>/etc/postgresql/9.3/main/postgresql.conf
-
-EXPOSE 5432
-
-VOLUME ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
-
-CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+```sh
+$ docker build
 ```
 
-- To run the project you need docker-compose and run this command:
+- list all the docker images and you can also see the image `chefapi:latest` in the list.
 
-```bash
-docker-compose up -d
+```sh
+$ docker images
 ```
 
-- To stop:
+- run the application at port 5000. The various options used are:
 
-```bash
-docker-compose down
+> - `-p`: publish the container's port to the host port.
+> - `-d`: run the container in the background.
+> - `-i`: run the container in interactive mode.
+> - `-t`: to allocate pseudo-TTY.
+> - `--name`: name of the container
+
+```sh
+$ docker container run -p 5000:5000 -dit --name ChefAPI chefapi:latest
 ```
 
-## Contributing ⭐
+- Check the status of the docker container
 
-- Contributions are welcome :heart:
+```sh
+$ docker container ps
+```
 
-- Please share any features, and add unit tests!
+## Preconfigured Packages
 
-- Use the pull request and issue systems to contribute.
+Includes preconfigured packages to kick start ChefAPI by just setting appropriate configuration.
+
+| Package                                                      | Usage                                                            |
+| ------------------------------------------------------------ | ---------------------------------------------------------------- |
+| [uvicorn](https://www.uvicorn.org/)        | a lightning-fast ASGI server implementation, using uvloop and httptools.           |
+| [Python-Jose](https://github.com/mpdavis/python-jose) | a JavaScript Object Signing and Encryption implementation in Python.    |
+| [SQLAlchemy](https://www.sqlalchemy.org/)  | is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL. |
+| [starlette](https://www.starlette.io/)   | a lightweight ASGI framework/toolkit, which is ideal for building high performance asyncio services.    |
+| [passlib](https://passlib.readthedocs.io/en/stable/)  | a password hashing library for Python 2 & 3, which provides cross-platform implementations of over 30 password hashing algorithms         |
+| [bcrypt](https://github.com/pyca/bcrypt/)               | Good password hashing for your software and your servers.    |
+| [python-multipart](https://github.com/andrew-d/python-multipart) | streaming multipart parser for Python.   |
+
+`yapf` packages for `linting and formatting`
+
+## Contributing
+
+- Join the ChefAPI Creator and Contribute to the Project if you have any enhancement or add-ons to create a good and Secure Project, Help any User to Use it in a good and simple way.
+
+## License
+
+This project is licensed under the terms of the MIT license.
