@@ -23,7 +23,7 @@ idna==2.10
 itsdangerous==1.1.0
 Jinja2==2.11.3
 MarkupSafe==2.0.1
-orjson==3.6.1
+orjson==3.6.3
 passlib==1.7.4
 promise==2.3
 pyasn1==0.4.8
